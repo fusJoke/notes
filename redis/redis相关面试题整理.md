@@ -123,7 +123,7 @@
 3. 压缩列表(ziplist)
 
    类似数组，但表头有三个字段表示列表相关，数组中的每一个元素都对应保存一个数据；可以存字符串或整数
-   <img src="assets/image-20211220202149322.png" alt="image-20211220202149322" style="zoom:50%;" />
+   <img src=".assets/image-20211220202149322.png" alt="image-20211220202149322" style="zoom:50%;" />
 
    zlbytes：列表长度；
 
@@ -150,7 +150,7 @@
    跳跃表结构在 Redis 中的运用场景只有一个，那就是作为有序列表 (Zset) 的使用。
 
    多级索引减少搜索次数
-   <img src="assets/image-20211220213408804.png" alt="image-20211220213408804" style="zoom:25%;" />
+   <img src=".assets/image-20211220213408804.png" alt="image-20211220213408804" style="zoom:25%;" />
 
 5. 哈希表/字典(dict)
 
@@ -160,7 +160,7 @@
 
    链地址法，通过next这个指针可以将多个哈希值相同的键值对连接在一起，用来**解决哈希冲突**
 
-   <img src="assets/image-20211220205215170.png" alt="image-20211220205215170" style="zoom:25%;" />
+   <img src=".assets/image-20211220205215170.png" alt="image-20211220205215170" style="zoom:25%;" />
 
    ##### 哈希冲突链过长就会触发rehash操作
 
@@ -174,7 +174,7 @@
    渐进式rehash：
 
    第二步拷贝数据时，Redis仍然正常处理客户端请求，每处理一个请求时，从哈希表1中的第一个索引位置开始，顺带着将这个索引位置上的所有entries拷贝到哈希表2中；等处理下一个请求时，再顺带拷贝哈希表1中的下一个索引位置的entries
-   <img src="assets/image-20211220210242551.png" alt="image-20211220210242551" style="zoom:25%;" /> 
+   <img src=".assets/image-20211220210242551.png" alt="image-20211220210242551" style="zoom:25%;" /> 
 
     
 
@@ -255,7 +255,7 @@ redis为什么快？
 	3）采用io多路复用
 	4）单线程避免上下文切换
 redis基于多路复用的高性能I/O模型
-<img src="assets/image-20211219233958276.png" alt="image-20211219233958276" style="zoom:50%;" />
+<img src=".assets/image-20211219233958276.png" alt="image-20211219233958276" style="zoom:50%;" />
 
 ![image-20211219235115244](image-20211219235115244-9929077.png)
 
