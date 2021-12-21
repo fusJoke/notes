@@ -1,0 +1,31 @@
+1. 进程分类
+   	实时进程，尽快执行返回结果。普通进程
+
+2. 调度策略
+
+   ```
+   unsigned int policy
+   ```
+
+   ```
+   #define SCHED_NORMAL		0   	// 轮流调度算法
+   #define SCHED_FIFO		1       // 新进先出
+   #define SCHED_RR		2				  // 普通进程	
+   #define SCHED_BATCH		3       // 后台进程 
+   #define SCHED_IDLE		5       // 特别空闲的进程
+   #define SCHED_DEADLINE	 	6 //按照任务deadline进行调度，距离deadline时间最近的那个任务
+   ```
+
+   优先级
+
+   ```
+   int prio, static_prio, normal_prio;
+   unsigned int rt_priority;
+   ```
+
+3. 完全公平调度算法（CFS,completely fair scheduling）
+   CPU 会提供一个时钟，过一段时间就触发一个时钟中断。就像咱们的表滴答一下，这个我们叫 Tick。CFS 会为每一个进程安排一个虚拟运行时间 vruntime。如果一个进程在运行，随着时间的增长，也就是一个个 tick 的到来，进程的 vruntime 将不断增大。没有得到执行的进程 vruntime 不变
+
+4. 调度队列与调度实体
+
+   

@@ -1,0 +1,21 @@
+# 加法器
+
+​	
+
+<img src="/Users/wangfusheng/Library/Application Support/typora-user-images/image-20200908093401743.png" alt="image-20200908093401743" style="zoom:50%;" />
+
+1. 异或门和半加器
+   		基础门电路，输入都是两个单独的bit，输出是一个单独的bit。如果我们要对2个8 位（bit）的数，计算与、或、非这样的简单逻辑运算，其实很容易。只要连续摆放8个开关，来代表一个8位数
+
+   ​		<img src="/Users/wangfusheng/Library/Application Support/typora-user-images/image-20200908094311193.png" alt="image-20200908094311193" style="zoom:50%;" />
+
+   ​			异或门，其实，异或门就是一个最简单的整数加法，，所需要使用的基本门电路。 
+   ​			所以，通过一个异或门计算出个位，通过一个与门计算出是否进位，我们就通过电路算出了一个一位数的加法。于是，我们把两个门电路打包，给它取一个名字，就叫作半加器（Half Adder）。 	
+
+   ​		
+
+2. 全加器
+   我们用两个半加器和一个或门，就能组合成一个全加器。
+   <img src="/Users/wangfusheng/Library/Application Support/typora-user-images/image-20200908101419559.png" alt="image-20200908101419559" style="zoom:50%;" />
+
+   ​	第一个半加器，计算出第一个位数的值，以及是否进位的x，第二个半加器
