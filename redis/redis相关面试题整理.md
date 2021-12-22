@@ -375,9 +375,38 @@ https://www.bilibili.com/video/BV1xQ4y1h7xq?p=10
    + DISCard，清空事务队列的命令，放弃并退出事务
    + unwatch命令取消监控
 
-   
 
-    
+## 12、使用redis做异步队列
+
+一般使用list结构作为队列，rpush生成消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会在重试
+
+#### 能不用sleep？
+
+list还有个blpop，在没有消息的时候，它会阻塞住知道有消息到来
+
+#### 能不生成一次消费多次？
+
+pub/sub主题订阅模式，可以实现1：N消息队列
+
+#### pub/sub有什么缺点
+
+消费者下线生产的消息会丢失
+
+#### 实现延时队列
+
+生产:使用 sortedset，拿时间戳作为 score，消息内容作为 key 调用 zadd 来生产消息，
+
+消费者用zrangebyscore 指令获取 N 秒之前的数据轮询进行处理
+
+```
+https://stor.51cto.com/art/202009/627546.htm
+```
+
+
+
+
+
+ 
 
 # 场景题
 
