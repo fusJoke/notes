@@ -400,5 +400,142 @@ func (words Keywords) Clone(updateWords []*Keywords) Keywords {
 
 
 
-## 结构型的设计模式
+# 结构型的设计模式
+
+## 代理模式
+
+作用：代理模式可以在不修改被代理的基础上，通过扩展代理类；进行一些功能的附加与增加。
+
+和继承对比：假如我只要修改一个类的方法，如果使用继承的话可能把不需要的依赖和方法都继承过来。而代理模式将代理类作为自己的一个成员变量进行复用。
+
+实现：
+
+1. 先确定要增强的方法，即定义接口
+2. 代理类的成员对象声明为被代理的对象
+3. 代理类继承接口，实现接口
+
+```go
+type IUser interface{
+  Login(uname, password string) error
+}
+
+type User struct{}
+
+func (u *User) Login(username, password string) error {
+  return nil
+}
+
+type UserProxy struct {
+  user *User
+}
+
+func NewUserProxy(user *User) *UserProxy{
+  return &UserProxy{
+    user: user
+  }
+}
+
+func (p *UserProxy) Login(username, password string) error {
+  start := time.Now()
+  
+  if err := p.user.Login(username, password); err != nil P{
+    return err
+  }
+  
+  log.Printf("user login cost time:%s", time.Now().Sub(start))
+  
+  return nil
+}
+```
+
+
+
+## 桥接模式
+
+桥接模式解决了什么问题？
+
+一个类有两个方向的派生，如果用继承来实现会造成类的数量几何级数增长。举例，形状类shape类有颜色和形状两个派生。颜色有蓝色、红色；形状有方和圆。会派生四种蓝方，蓝圆，红方，红圆。
+
+所以更倾向于用color类的抽象组合进shape类。
+
+```go
+type IMsgSender interface {
+  Send(msg string) error
+}
+
+type EmailMsgSender struct {
+  emails []string
+}
+
+func NewEmailMsgSender(emails []string) *EmailMsgSender {
+  return &EmailsMsgSender{emials: emails}
+}
+
+func (s *EmailMsgSender) send(msg string) error{
+  return nil
+}
+
+type INotification interface {
+  NOtify(msg string) error
+}
+
+type ErrorNotification struct {
+  sender IMsgSender
+}
+
+func NewErrorNOtification(sender IMsgSender) *ErrorNOtification {
+  return &ErrorNotification{sender: sender}
+}
+
+func (n *ErrorNotification) Notify (msg string) error {
+  return n.sender.Send(msg)
+}
+
+```
+
+
+
+## 装饰器模式
+
+装饰圈模式解决了什么问题？
+
+套娃模式，一层套一层。
+
+装饰器和代理模式的区别
+
+代理模式是对自己功能增强；
+
+```go
+package decorator
+
+type IDraw interface {
+	Draw() string
+}
+
+type Square struct{}
+
+func (s Square) Draw() string {
+	return "this is a square"
+}
+
+type ColorSquare struct {
+	square IDraw
+	color string
+}
+
+func NewColorSquare(square IDraw, color string) ColorSquare {
+	return ColorSquare{color: color, square: square}
+}
+
+func (c ColorSquare) Draw() string {
+	return c.square.Draw() + ", color is " + c.color
+}
+
+```
+
+
+
+
+
+
 
