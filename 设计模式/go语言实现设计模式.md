@@ -400,7 +400,7 @@ func (words Keywords) Clone(updateWords []*Keywords) Keywords {
 
 
 
-# 结构型的设计模式
+# 结构型
 
 ## 代理模式
 
@@ -535,7 +535,276 @@ func (c ColorSquare) Draw() string {
 
 
 
+## 适配器模式
+
+作用：兼容不同的接口
+
+实现方式：适配器类同时实现两种接口
+
+```go
+package adapter
+
+import "fmt"
+
+type ICreateServer interface {
+  CreateServer(cpu, mem float64) error
+}
+
+type AWSClient struct{}
+
+func (c *AWSClient) RunInstance(cpu, mem float64) error {
+  fmt.Printf("aws client run seccess, cpu: %f, mem: %f", cpu, mem)
+}
+
+type AwsClientAdapter struct{
+  Client AWSClient
+}
+
+func (a *AwsClientAdapter) CreateServer(cpu, mem float64) error {
+  a.Client.RunInstance(cpu, mem)
+}
+
+// AliyunClient aliyun sdk
+type AliyunClient struct{}
+
+// CreateServer 启动实例
+func (c *AliyunClient) CreateServer(cpu, mem int) error {
+	fmt.Printf("aws client run success, cpu： %d, mem: %d", cpu, mem)
+	return nil
+}
+
+// AliyunClientAdapter 适配器
+type AliyunClientAdapter struct {
+	Client AliyunClient
+}
+
+// CreateServer 启动实例
+func (a *AliyunClientAdapter) CreateServer(cpu, mem float64) error {
+	a.Client.CreateServer(int(cpu), int(mem))
+	return nil
+}
+
+```
 
 
 
+## 门面模式
+
+封装复制的实现，向外提供一组接口。
+
+```go
+package facede
+
+type IUser interface {
+	Login(phone int, code int) (*User, error)
+  Register(phone int, code) (*User, error)
+}
+
+type IUserFacede interface {
+  LoginOrRegister(phone int, code int) error
+}
+
+type User struct {
+  Name string
+}
+
+type UserService struct {}
+
+func (u UserService) Login(phone int, code int) (*User, error) {
+  return &User{name:"test login"}, nil
+}
+
+func (u UserService) Register(phone int, code int) (*User, error) {
+  return &User{Name:"test register"}, nil
+}
+
+// LoginOrRegister 登录或注册
+func (u UserService)LoginOrRegister(phone int, code int) (*User, error) {
+	user, err := u.Login(phone, code)
+	if err != nil {
+		return nil, err
+	}
+
+	if user != nil {
+		return user, nil
+	}
+
+	return u.Register(phone, code)
+}
+
+```
+
+
+
+## 组合模式
+
+树形结构的对象
+
+```go
+package composite
+
+type IOrganization interface {
+	Count() int
+}
+
+type Employee struct {
+  Name string
+}
+
+func (Employee) Count() int {
+  return 1
+}
+
+type Department Struct {
+  Name string
+  SubOrganization []IOrganization
+}
+
+func (d Department) Count() int {
+  c := 0 
+  for _, org := range d.SubOrganization { 
+    c += org.Count()
+  }
+  return c
+}
+
+func (d *Department) Addsub(org IOrganization) {
+  d.SubOrganizations = append(d.SubOrganizations, org)
+}
+
+// NewOrganization 构建组织架构 demo
+func NewOrganization() IOrganization {
+	root := &Department{Name: "root"}
+	for i := 0; i < 10; i++ {
+		root.AddSub(&Employee{})
+		root.AddSub(&Department{Name: "sub", SubOrganizations: []IOrganization{&Employee{}}})
+	}
+	return root
+}
+
+```
+
+
+
+## 享元模式
+
+```go
+package flyweight
+
+var units = map[int]*ChessPieceUnit{
+	1:{
+		ID: 1,
+		Name: "车",
+		Color: "red",
+	}
+	2: {
+		ID: 2,
+		Name: "炮",
+		Color: "red",
+	}
+}
+
+type ChessPieceUnit struct {
+	ID    uint
+	Name  string
+	Color string
+}
+
+func NewChessPieceUnit(id int) *ChessPieceUnit{
+  return units[id]
+}
+
+type ChessPiece struct {
+  Unit *ChessPieceUnit
+  X int
+  Y int
+}
+
+type ChessBoard struct {
+  chessPieces map[int]*ChessPiece
+}
+
+func NewChessBoard() *ChessBoard {
+  board := &ChessBoard{chessPieces: map[int]*ChessPiece{}}
+  for id := range units{
+    board.chessPieces[id] = &ChessPiece{
+			Unit: NewChessPieceUnit(id),
+			X:    0,
+			Y:    0,
+		}
+  }
+  return board
+}
+
+func (c *ChessBoard) Move(id, x, y int) {
+	c.chessPieces[id].X = x
+	c.chessPieces[id].Y = y
+}
+```
+
+
+
+# 行为型
+
+## 观察者模式
+
+```go
+package observer
+
+import "fmt"
+
+// ISubject subject
+type ISubject interface {
+	Register(observer IObserver)
+	Remove(observer IObserver)
+	Notify(msg string)
+}
+
+// IObserver 观察者
+type IObserver interface {
+	Update(msg string)
+}
+
+// Subject Subject
+type Subject struct {
+	observers []IObserver
+}
+
+// Register 注册
+func (sub *Subject) Register(observer IObserver) {
+	sub.observers = append(sub.observers, observer)
+}
+
+// Remove 移除观察者
+func (sub *Subject) Remove(observer IObserver) {
+	for i, ob := range sub.observers {
+		if ob == observer {
+			sub.observers = append(sub.observers[:i], sub.observers[i+1:]...)
+		}
+	}
+}
+
+// Notify 通知
+func (sub *Subject) Notify(msg string) {
+	for _, o := range sub.observers {
+		o.Update(msg)
+	}
+}
+
+// Observer1 Observer1
+type Observer1 struct{}
+
+// Update 实现观察者接口
+func (Observer1) Update(msg string) {
+	fmt.Printf("Observer1: %s", msg)
+}
+
+// Observer2 Observer2
+type Observer2 struct{}
+
+// Update 实现观察者接口
+func (Observer2) Update(msg string) {
+	fmt.Printf("Observer2: %s", msg)
+}
+```
 
