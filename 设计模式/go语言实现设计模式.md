@@ -808,3 +808,337 @@ func (Observer2) Update(msg string) {
 }
 ```
 
+
+
+## 模板模式
+
+将一个算法转换成多个步骤
+
+实现：
+
+创建抽象基类并声明一个模板方法和代表算法步骤的一系列抽象方法
+
+为每个算法变体新建一个具体子类， 它*必须*实现所有的抽象步骤
+
+<img src="/Users/wangfusheng/Documents/notes/设计模式/.assets/image-20220103134116238.png" alt="image-20220103134116238" style="width:40%;height:40%" /> 
+
+```go
+package TemplatePattern
+ 
+import "fmt"
+ 
+type Game interface {
+	Initialize()
+	StartPlay()
+	EndPlay()
+	Play()
+}
+ 
+type BaseGame struct {
+}
+ 
+func (b *BaseGame) Initialize() {
+	fmt.Println("base Initialize")
+}
+func (b *BaseGame) StartPlay() {
+	fmt.Println("base StartPlay")
+}
+func (b *BaseGame) EndPlay() {
+	fmt.Println("base EndPlay")
+}
+func (b *BaseGame) Play() {
+	b.Initialize()
+	b.StartPlay()
+	b.EndPlay()
+}
+
+package TemplatePattern
+ 
+import "fmt"
+ 
+type Football struct {
+	baseGame BaseGame
+}
+ 
+func (f *Football) Initialize() {
+	fmt.Println("Football Game Finished!")
+}
+func (f *Football) StartPlay() {
+	f.baseGame.StartPlay()
+}
+func (f *Football) EndPlay() {
+	fmt.Println("Football Game Started. Enjoy the game!")
+}
+func (f *Football) Play() {
+	f.Initialize()
+	f.StartPlay()
+	f.EndPlay()
+}
+```
+
+这里用组合模拟继承。baseGame是抽象父类，Football是具体的实现类
+
+
+
+## 策略模式
+
+保存文件的时候，由于政策或者其他的原因可能需要选择不同的存储方式，敏感数据我们需要加密存储，不敏感的数据我们可以直接明文保存
+
+```go
+package strategy
+
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+)
+
+// StorageStrategy 存储策略
+type StorageStrategy interface {
+	Save(name string, data []byte) error
+}
+
+var strategys = map[string]StorageStrategy{
+	"file":         &fileStorage{},
+	"encrypt_file": &encryptFileStorage{},
+}
+
+// NewStorageStrategy NewStorageStrategy
+func NewStorageStrategy(t string) (StorageStrategy, error) {
+	s, ok := strategys[t]
+	if !ok {
+		return nil, fmt.Errorf("not found StorageStrategy: %s", t)
+	}
+
+	return s, nil
+}
+
+// FileStorage 保存到文件
+type fileStorage struct{}
+
+// Save Save
+func (s *fileStorage) Save(name string, data []byte) error {
+	return ioutil.WriteFile(name, data, os.ModeAppend)
+}
+
+// encryptFileStorage 加密保存到文件
+type encryptFileStorage struct{}
+
+// Save Save
+func (s *encryptFileStorage) Save(name string, data []byte) error {
+	// 加密
+	data, err := encrypt(data)
+	if err != nil {
+		return err
+	}
+
+	return ioutil.WriteFile(name, data, os.ModeAppend)
+}
+
+func encrypt(data []byte) ([]byte, error) {
+	// 这里实现加密算法
+	return data, nil
+}
+```
+
+
+
+## 职业链
+
+
+
+```go
+// Package chain 职责链模式
+// 假设我们现在有个校园论坛，由于社区规章制度、广告、法律法规的原因需要对用户的发言进行敏感词过滤
+// 如果被判定为敏感词，那么这篇帖子将会被封禁
+package chain
+
+// SensitiveWordFilter 敏感词过滤器，判定是否是敏感词
+type SensitiveWordFilter interface {
+	Filter(content string) bool
+}
+
+// SensitiveWordFilterChain 职责链
+type SensitiveWordFilterChain struct {
+	filters []SensitiveWordFilter
+}
+
+// AddFilter 添加一个过滤器
+func (c *SensitiveWordFilterChain) AddFilter(filter SensitiveWordFilter) {
+	c.filters = append(c.filters, filter)
+}
+
+// Filter 执行过滤
+func (c *SensitiveWordFilterChain) Filter(content string) bool {
+	for _, filter := range c.filters {
+		// 如果发现敏感直接返回结果
+		if filter.Filter(content) {
+			return true
+		}
+	}
+	return false
+}
+
+// AdSensitiveWordFilter 广告
+type AdSensitiveWordFilter struct{}
+
+// Filter 实现过滤算法
+func (f *AdSensitiveWordFilter) Filter(content string) bool {
+	// TODO: 实现算法
+	return false
+}
+
+// PoliticalWordFilter 政治敏感
+type PoliticalWordFilter struct{}
+
+// Filter 实现过滤算法
+func (f *PoliticalWordFilter) Filter(content string) bool {
+	// TODO: 实现算法
+	return true
+}
+```
+
+
+
+## 状态模式
+
+```go
+ package saccount
+ 
+ import "fmt"
+
+type Account struct {
+   State       ActionState
+   HealthValue int
+}
+func NewAccount(health int) *Account {
+   a := &Account{
+      HealthValue: health,
+   }
+   a.changeState()
+   return a
+}
+
+func (a *Account)View()  {
+   a.State.View()
+}
+
+func (a *Account)Comment()  {
+   a.State.Comment()
+}
+func (a *Account)Post()  {
+   a.State.Post()
+}
+type ActionState interface {
+   View()
+   Comment()
+   Post()
+}
+
+type CloseState struct {
+
+}
+
+func (c *CloseState)View()  {
+   fmt.Println("账号被封，无法看帖")
+}
+
+func (c *CloseState)Comment()  {
+   fmt.Println("抱歉，你的健康值小于-10，不能评论")
+}
+func (c *CloseState)Post()  {
+   fmt.Println("抱歉，你的健康值小于0，不能发帖")
+}
+
+type RestrictedState struct {
+
+}
+func (r *RestrictedState)View()  {
+   fmt.Println("正常看帖")
+}
+
+func (r *RestrictedState)Comment()  {
+   fmt.Println("正常评论")
+}
+func (r *RestrictedState)Post()  {
+   fmt.Println("抱歉，你的健康值小于0，不能发帖")
+}
+
+type NormalState struct {
+
+}
+func (n *NormalState)View()  {
+   fmt.Println("正常看帖")
+}
+
+func (n *NormalState)Comment()  {
+   fmt.Println("正常评论")
+}
+func (n *NormalState)Post()  {
+   fmt.Println("正常发帖")
+}
+func (a *Account) changeState() {
+   if a.HealthValue <= -10 {
+   		a.State = &CloseState{}
+   } else if a.HealthValue > -10 && a.HealthValue <= 0 {
+      a.State = &RestrictedState{}
+   } else if a.HealthValue > 0 {
+      a.State = &NormalState{}
+   }
+}
+
+///给账户设定健康值
+func (a *Account) SetHealth(value int) {
+   a.HealthValue = value
+   a.changeState()
+}
+```
+
+
+
+## 迭代器模式
+
+```go
+package iterator
+
+// Iterator 迭代器接口
+type Iterator interface {
+	HasNext() bool
+	Next()
+	// 获取当前元素，由于 Go 1.15 中还没有泛型，所以我们直接返回 interface{}
+	CurrentItem() interface{}
+}
+
+// ArrayInt 数组
+type ArrayInt []int
+
+// Iterator 返回迭代器
+func (a ArrayInt) Iterator() Iterator {
+	return &ArrayIntIterator{
+		arrayInt: a,
+		index:    0,
+	}
+}
+
+// ArrayIntIterator 数组迭代
+type ArrayIntIterator struct {
+	arrayInt ArrayInt
+	index    int
+}
+
+// HasNext 是否有下一个
+func (iter *ArrayIntIterator) HasNext() bool {
+	return iter.index < len(iter.arrayInt)-1
+}
+
+// Next 游标加一
+func (iter *ArrayIntIterator) Next() {
+	iter.index++
+}
+
+// CurrentItem 获取当前元素
+func (iter *ArrayIntIterator) CurrentItem() interface{} {
+	return iter.arrayInt[iter.index]
+}
+```
+
