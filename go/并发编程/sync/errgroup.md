@@ -47,3 +47,13 @@ func (g *Group) Go(f func() error) {
 }
 ```
 
+```
+1.waitGroup
+
+​	https://lailin.xyz/post/go-training-week3-waitgroup.html
+​	https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-sync-primitives/
+
+2.errgroup
+	https://lailin.xyz/post/go-training-week3-errgroup.html
+```
+
