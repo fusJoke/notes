@@ -67,7 +67,7 @@ https://juejin.cn/post/6864726280550481927
    $a[] = &$a;
    ```
 
-   <img src="/Users/wangfusheng/Documents/notes/php/.assets/webp" alt="img" style="zoom:67%;" /> 
+   <img src=".assets/webp" alt="img" style="zoom:67%;" /> 
 
    什么时候数组变量会变成垃圾？
 
@@ -83,11 +83,22 @@ https://juejin.cn/post/6844903788810092557
 
 1. php体系
 
-   <img src="/Users/wangfusheng/Documents/notes/php/.assets/image-20220119103435400.png" style="zoom:50%;" /> 
+   <img src=".assets/image-20220119103435400.png" style="zoom:50%;" /> 
 
-   
+
+
+## 3、opcode优化
+
+1. 静态编译、解释执行、及时编译
+
+   静态编译（static compilation），也称事前编译（ahead-of-time compilation），简称AOT。即把源代码编译成目标代码，执行时在支持目标代码的平台上运行。
+
+   动态编译（dynamic compilation），相对于静态编译而言，指”在运行时进行编译”。通常情况下采用解释器(interpreter)编译执行，它是指一条一条的解释执行源语言。
+
+   JIT编译（just-in-time compilation），即即时编译，狭义指某段代码即将第一次被执行时进行编译，而后则不用编译直接执行，它为动态编译的一种特例
 
 ```
 https://www.php.cn/php-weizijiaocheng-413238.html
+https://tech.youzan.com/understanding-opcode-optimization-in-php/
 ```
 
