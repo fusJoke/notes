@@ -1142,3 +1142,315 @@ func (iter *ArrayIntIterator) CurrentItem() interface{} {
 }
 ```
 
+
+
+## 备忘录
+
+```go
+package memento
+
+type InputText struct{
+	content string
+}
+
+func(in *InputText) Append(content string) {
+	in.content += content
+}
+
+func(in *InputText) GetText() string {
+	return in.content
+}
+func(in *InputText) Snapshot() *Snapshot{
+	in.content = s.GetText()
+}
+
+type Snapshot struct {
+	content string
+}
+
+func (s *Snapshot) GetText() string {
+	return s.content
+}
+```
+
+
+
+## 访问者模式
+
+略
+
+
+
+## 命令模式
+
+```go
+// Package command 命令模式
+// 这是示例一，采用将函数封装为对象的方式实现，
+// 示例说明:
+// 假设现在有一个游戏服务，我们正在实现一个游戏后端
+// 使用一个 goroutine 不断接收来自客户端请求的命令，并且将它放置到一个队列当中
+// 然后我们在另外一个 goroutine 中来执行它
+package command
+
+import "fmt"
+
+// ICommand 命令
+type ICommand interface {
+	Execute() error
+}
+
+// StartCommand 游戏开始运行
+type StartCommand struct{}
+
+// NewStartCommand NewStartCommand
+func NewStartCommand( ) *StartCommand {
+	return &StartCommand{}
+}
+
+// Execute Execute
+func (c *StartCommand) Execute() error {
+	fmt.Println("game start")
+	return nil
+}
+
+// ArchiveCommand 游戏存档
+type ArchiveCommand struct{}
+
+// NewArchiveCommand NewArchiveCommand
+func NewArchiveCommand( /*正常情况下这里会有一些参数*/ ) *ArchiveCommand {
+	return &ArchiveCommand{}
+}
+
+// Execute Execute
+func (c *ArchiveCommand) Execute() error {
+	fmt.Println("game archive")
+	return nil
+}
+```
+
+## 解释器模式
+
+```go
+// Package interpreter 解释器模式
+// 采用原课程的示例, 并且做了一下简化
+// 假设我们现在有一个监控系统
+// 现在需要实现一个告警模块，可以根据输入的告警规则来决定是否触发告警
+// 告警规则支持 &&、>、< 3种运算符
+// 其中 >、< 优先级比  && 更高
+package interpreter
+
+import (
+	"fmt"
+	"regexp"
+	"strconv"
+	"strings"
+)
+
+// AlertRule 告警规则
+type AlertRule struct {
+	expression IExpression
+}
+
+// NewAlertRule NewAlertRule
+func NewAlertRule(rule string) (*AlertRule, error) {
+	exp, err := NewAndExpression(rule)
+	return &AlertRule{expression: exp}, err
+}
+
+// Interpret 判断告警是否触发
+func (r AlertRule) Interpret(stats map[string]float64) bool {
+	return r.expression.Interpret(stats)
+}
+
+// IExpression 表达式接口
+type IExpression interface {
+	Interpret(stats map[string]float64) bool
+}
+
+// GreaterExpression >
+type GreaterExpression struct {
+	key   string
+	value float64
+}
+
+// Interpret Interpret
+func (g GreaterExpression) Interpret(stats map[string]float64) bool {
+	v, ok := stats[g.key]
+	if !ok {
+		return false
+	}
+	return v > g.value
+}
+
+// NewGreaterExpression NewGreaterExpression
+func NewGreaterExpression(exp string) (*GreaterExpression, error) {
+	data := regexp.MustCompile(`\s+`).Split(strings.TrimSpace(exp), -1)
+	if len(data) != 3 || data[1] != ">" {
+		return nil, fmt.Errorf("exp is invalid: %s", exp)
+	}
+
+	val, err := strconv.ParseFloat(data[2], 10)
+	if err != nil {
+		return nil, fmt.Errorf("exp is invalid: %s", exp)
+	}
+
+	return &GreaterExpression{
+		key:   data[0],
+		value: val,
+	}, nil
+}
+
+// LessExpression <
+type LessExpression struct {
+	key   string
+	value float64
+}
+
+// Interpret Interpret
+func (g LessExpression) Interpret(stats map[string]float64) bool {
+	v, ok := stats[g.key]
+	if !ok {
+		return false
+	}
+	return v < g.value
+}
+
+// NewLessExpression NewLessExpression
+func NewLessExpression(exp string) (*LessExpression, error) {
+	data := regexp.MustCompile(`\s+`).Split(strings.TrimSpace(exp), -1)
+	if len(data) != 3 || data[1] != "<" {
+		return nil, fmt.Errorf("exp is invalid: %s", exp)
+	}
+
+	val, err := strconv.ParseFloat(data[2], 10)
+	if err != nil {
+		return nil, fmt.Errorf("exp is invalid: %s", exp)
+	}
+
+	return &LessExpression{
+		key:   data[0],
+		value: val,
+	}, nil
+}
+
+// AndExpression &&
+type AndExpression struct {
+	expressions []IExpression
+}
+
+// Interpret Interpret
+func (e AndExpression) Interpret(stats map[string]float64) bool {
+	for _, expression := range e.expressions {
+		if !expression.Interpret(stats) {
+			return false
+		}
+	}
+	return true
+}
+
+// NewAndExpression NewAndExpression
+func NewAndExpression(exp string) (*AndExpression, error) {
+	exps := strings.Split(exp, "&&")
+	expressions := make([]IExpression, len(exps))
+
+	for i, e := range exps {
+		var expression IExpression
+		var err error
+
+		switch {
+		case strings.Contains(e, ">"):
+			expression, err = NewGreaterExpression(e)
+		case strings.Contains(e, "<"):
+			expression, err = NewLessExpression(e)
+		default:
+			err = fmt.Errorf("exp is invalid: %s", exp)
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		expressions[i] = expression
+	}
+
+	return &AndExpression{expressions: expressions}, nil
+}
+```
+
+
+
+## 中介模式
+
+```go
+// Package mediator 中介模式
+// 采用原课程的示例，并且做了一些裁剪
+// 假设我们现在有一个较为复杂的对话框，里面包括，登录组件，注册组件，以及选择框
+// 当选择框选择“登录”时，展示登录相关组件
+// 当选择框选择“注册”时，展示注册相关组件
+package mediator
+
+import (
+	"fmt"
+	"reflect"
+)
+
+// Input 假设这表示一个输入框
+type Input string
+
+// String String
+func (i Input) String() string {
+	return string(i)
+}
+
+// Selection 假设这表示一个选择框
+type Selection string
+
+// Selected 当前选中的对象
+func (s Selection) Selected() string {
+	return string(s)
+}
+
+// Button 假设这表示一个按钮
+type Button struct {
+	onClick func()
+}
+
+// SetOnClick 添加点击事件回调
+func (b *Button) SetOnClick(f func()) {
+	b.onClick = f
+}
+
+// IMediator 中介模式接口
+type IMediator interface {
+	HandleEvent(component interface{})
+}
+
+// Dialog 对话框组件
+type Dialog struct {
+	LoginButton         *Button
+	RegButton           *Button
+	Selection           *Selection
+	UsernameInput       *Input
+	PasswordInput       *Input
+	RepeatPasswordInput *Input
+}
+
+// HandleEvent HandleEvent
+func (d *Dialog) HandleEvent(component interface{}) {
+	switch {
+	case reflect.DeepEqual(component, d.Selection):
+		if d.Selection.Selected() == "登录" {
+			fmt.Println("select login")
+			fmt.Printf("show: %s\n", d.UsernameInput)
+			fmt.Printf("show: %s\n", d.PasswordInput)
+		} else if d.Selection.Selected() == "注册" {
+			fmt.Println("select register")
+			fmt.Printf("show: %s\n", d.UsernameInput)
+			fmt.Printf("show: %s\n", d.PasswordInput)
+			fmt.Printf("show: %s\n", d.RepeatPasswordInput)
+		}
+		// others, 如果点击了登录按钮，注册按钮
+	}
+}
+```
+

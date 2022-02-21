@@ -662,11 +662,21 @@ update是写锁，innodb有mvcc机制下读的是快照读
 
    3)雪花算法
 
+## 16、慢日志查询
+
+1. 开启慢日志查询
+
+   ```sql
+   SET GLOBAL slow_query_log = 'ON';
+   -- 未使用索引的查询也认为是一个可能的慢查询
+   set global log_queries_not_using_indexes = 'ON';
+   ```
+
+   ```
+   MySQL 慢日志位于 /var/lib/mysql/-slow.log
+   ```
+
    
-
-
-
-
 
 ## 面试题
 
