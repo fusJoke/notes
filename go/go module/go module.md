@@ -34,3 +34,6 @@ GOSUMDB的默认值为：`sum.golang.org`，在国内也是无法访问的，但
 go env -w GOPRIVATE="git.example.com,github.com/eddycjy/mquote"
 ```
 
+
+
+## 常用的命令
