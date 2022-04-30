@@ -281,7 +281,8 @@ LRU链表按照一定比例分成两截：
 
 #### 多个**Buffer Pool**实例
 
-如果buffer pool 过大，可以进行切分一个个较小的实例。切分数量通过innodb_buffer_pool_instances控制。当innodb_buffer_pool_size的值小于1G的时候设置多个实例是无效的，InnoDB会默认把innodb_buffer_pool_instances 的值修改为1
+如果buffer pool 过大，可以进行切分一个个较小的实例。切分数量通过innodb_buffer_pool_instances控制。
+当innodb_buffer_pool_size的值小于1G的时候设置多个实例是无效的，InnoDB会默认把innodb_buffer_pool_instances 的值修改为1
 
 #### **innodb_buffer_pool_chunk_size**
 
