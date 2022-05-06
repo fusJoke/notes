@@ -27,6 +27,13 @@ git pull
 会留下三个文件原来的，我修改以及其他人修改的，
 git rm 其中两个文件；
 git add 要保留的；
-git commit
+git commit 
+```
+
+githua高级搜索功能
+
+```
+In:readme 在readme里面搜索
+stars:>3000 点赞大于3000 
 ```
 
