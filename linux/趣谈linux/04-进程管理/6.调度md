@@ -1,0 +1,83 @@
+在 task_struct 中，有一个成员变量，我们叫**调度策略**。
+
+```
+unsigned int policy;
+```
+
+```
+#define SCHED_NORMAL		0
+#define SCHED_FIFO		1
+#define SCHED_RR		2
+#define SCHED_BATCH		3
+#define SCHED_IDLE		5
+#define SCHED_DEADLINE		6
+```
+
+配合调度策略的，还有我们刚才说的**优先级**，也在 task_struct 中。
+
+```
+int prio, static_prio, normal_prio;
+unsigned int rt_priority;
+```
+
+优先级其实就是一个数值，对于实时进程，优先级的范围是 0～99；对于普通进程，优先级的范围是 100～139。数值越小，优先级越高。从这里可以看出，所有的实时进程都比普通进程优先级要高
+
+### 实时调度策略
+
+对于调度策略，其中 SCHED_FIFO、SCHED_RR、SCHED_DEADLINE 是实时进程的调度策略。
+
+**SCHED_FIFO**先进先出
+
+**SCHED_RR 轮流调度算法**，采用时间片，相同优先级的任务当用完时间片会被放到队列尾部
+
+**SCHED_DEADLINE**，是按照任务的 deadline 进行调度的。当产生一个调度点的时候，DL 调度器总是选择其 deadline 距离当前时间点最近的那个任务，并调度它执行
+
+
+
+### 普通调度策略
+
+对于普通进程的调度策略有，SCHED_NORMAL、SCHED_BATCH、SCHED_IDLE。
+
+SCHED_NORMAL 是普通的进程
+
+SCHED_BATCH 是后台进程
+
+SCHED_IDLE 是特别空闲的时候才跑的进程
+
+
+
+
+
+sched_class 有几种实现：
+
+- stop_sched_class 优先级最高的任务会使用这种策略，会中断所有其他线程，且不会被其他任务打断；
+- dl_sched_class 就对应上面的 deadline 调度策略；
+- rt_sched_class 就对应 RR 算法或者 FIFO 算法的调度策略，具体调度策略由进程的 task_struct->policy 指定；
+- fair_sched_class 就是普通进程的调度策略；
+- idle_sched_class 就是空闲进程的调度策略。
+
+
+
+
+
+## 完全公平调度算法
+
+CPU 会提供一个时钟，过一段时间就触发一个时钟中断。就像咱们的表滴答一下，这个我们叫 Tick。CFS 会为每一个进程安排一个虚拟运行时间 vruntime。如果一个进程在运行，随着时间的增长，也就是一个个 tick 的到来，进程的 vruntime 将不断增大。没有得到执行的进程 vruntime 不变。
+虚拟运行时间 vruntime += 实际运行时间 delta_exec * NICE_0_LOAD/ 权重
+
+## 调度队列与调度实体
+
+CFS 需要一个数据结构来对 vruntime 进行排序，找出最小的那个。
+平衡查询和更新速度的是树，在这里使用的是红黑树。
+
+红黑树的的节点是应该包括 vruntime 的，称为调度实体。
+
+在 task_struct 中有这样的成员变量：
+
+struct sched_entity se;
+struct sched_rt_entity rt;
+struct sched_dl_entity dl;
+
+这里有实时调度实体 sched_rt_entity，Deadline 调度实体 sched_dl_entity，以及完全公平算法调度实体 sched_entity
+
+<img src="image-20210703180107885.png" alt="image-20210703180107885" style="zoom:50%;" />

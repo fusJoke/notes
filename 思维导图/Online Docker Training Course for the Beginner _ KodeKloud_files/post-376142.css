@@ -1,0 +1,19 @@
+.elementor-376142 .elementor-element.elementor-element-57846143:not(.elementor-motion-effects-element-type-background), .elementor-376142 .elementor-element.elementor-element-57846143 > .elementor-motion-effects-container > .elementor-motion-effects-layer{background-color:#E9F5FF;}.elementor-376142 .elementor-element.elementor-element-57846143{transition:background 0.3s, border 0.3s, border-radius 0.3s, box-shadow 0.3s;margin-top:13px;margin-bottom:0px;padding:10px 10px 10px 10px;}.elementor-376142 .elementor-element.elementor-element-57846143 > .elementor-background-overlay{transition:background 0.3s, border-radius 0.3s, opacity 0.3s;}.elementor-376142 .elementor-element.elementor-element-7753390d > .elementor-element-populated{margin:0px 0px 0px 0px;--e-column-margin-right:0px;--e-column-margin-left:0px;}.elementor-376142 .elementor-element.elementor-element-7753390d > .elementor-element-populated > .elementor-widget-wrap{padding:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-2c15986c .elementor-heading-title{color:#FFFFFF;font-weight:bold;}.elementor-376142 .elementor-element.elementor-element-2c15986c > .elementor-widget-container{margin:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-7dfef79e{color:#EDEDED;margin-top:-15px;margin-bottom:-15px;}.elementor-376142 .elementor-element.elementor-element-14ea093e > .elementor-element-populated{margin:0px 0px 0px 0px;--e-column-margin-right:0px;--e-column-margin-left:0px;}.elementor-376142 .elementor-element.elementor-element-14ea093e > .elementor-element-populated > .elementor-widget-wrap{padding:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-5ca4a24b{text-align:center;}.elementor-376142 .elementor-element.elementor-element-5ca4a24b img{width:100%;max-width:100%;border-radius:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-5ca4a24b > .elementor-widget-container{margin:0px 0px 0px 0px;padding:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-190a4d5 > .elementor-element-populated > .elementor-widget-wrap{padding:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-fde74e6 > .elementor-widget-container{margin:0px 0px 0px 0px;}.elementor-376142 .elementor-element.elementor-element-70575399{font-size:15px;}/* Start custom CSS for text-editor, class: .elementor-element-fde74e6 */.about_instrucor_name .elementor-text-editor p {
+    margin-bottom: 0;
+}/* End custom CSS */
+/* Start custom CSS for section, class: .elementor-element-57846143 */.elementor-376142 .elementor-element.elementor-element-57846143 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    padding: 82px 10px 82px 40px;
+    background-image: url(https://res.cloudinary.com/cloudusthad/image/upload/v1577703639/kodekloud-site/img/b-stat.png), -webkit-linear-gradient(
+284.27deg, #506B9F 5%, rgba(23, 29, 51, 0.94) 100%);
+    background-image: url(https://res.cloudinary.com/cloudusthad/image/upload/v1577703639/kodekloud-site/img/b-stat.png), linear-gradient(
+165.73deg, #506B9F 5%, rgba(23, 29, 51, 0.94) 100%);
+    background-position: 30px center, center;
+    background-repeat: no-repeat;
+    background-size: auto;
+    -webkit-box-shadow: 10px 40px 60px rgb(34 110 165 / 10%);
+    box-shadow: 10px 40px 60px rgb(34 110 165 / 10%);
+    color: #ffffff;
+}/* End custom CSS */
