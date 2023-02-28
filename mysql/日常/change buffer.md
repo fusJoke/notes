@@ -5,8 +5,6 @@
 
 当下一次查询命中这个数据页的时候，会先从磁盘中读取数据页到内存中，然后先执行change buffer的merge操作，保证数据逻辑的正确性。除了查询操作外，系统有后台线程会定期merge，数据库正常关闭(shutdown)的时候，也会进行merge操作。
 
-
-
 ### change buffer 和 redo log 对于磁盘的随机IO影响。
 
 redo log是减少 随机写磁盘IO 的消耗。每个操作先记录redo log，系统空闲时或redo log满时进行磁盘IO。
