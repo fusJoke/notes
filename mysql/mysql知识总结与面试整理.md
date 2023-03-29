@@ -39,7 +39,7 @@ FLOAT、DOUBLE 和 DECIMAL 都可以指定列宽，例如 DECIMAL(18, 9) 表示�
 char定长，varchar变长
 VARCHAR会保留字符串末尾的空格，而 CHAR 会删除
 char(m),varchar(m),m表示保存字符串的字符数
-Varcahr(5),varchar(200)的所占在存储空间时一样的，但更长的列需要更长的内存。
+Varcahr(5),varchar(200)的所占在存储空间时一样的，但是读的时候更长的列需要更长的内存。
 
 #### 字符，字符集，unicode字符集，编码，utf8编码，比较规则
 

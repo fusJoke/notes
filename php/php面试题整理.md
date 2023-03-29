@@ -57,23 +57,22 @@ https://juejin.cn/post/6864726280550481927
        'number' => (refcount=1, is_ref=0)=42
    
    )
+   ```
    
-   ```
-
-   数组元素引用本身数组
-
-   ```
+数组元素引用本身数组
+   
+```
    $a = array('one');
    $a[] = &$a;
    ```
-
-   <img src=".assets/webp" alt="img" style="zoom:67%;" /> 
-
-   什么时候数组变量会变成垃圾？
-
-   数组剩下的元素都是对自己本身的引用
-
    
+<img src=".assets/webp" alt="img" style="zoom:67%;" /> 
+   
+什么时候数组变量会变成垃圾？
+   
+数组剩下的元素都是对自己本身的引用
+   
+
 
 ```
 https://juejin.cn/post/6844903788810092557
