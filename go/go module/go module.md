@@ -35,5 +35,3 @@ go env -w GOPRIVATE="git.example.com,github.com/eddycjy/mquote"
 ```
 
 
-
-## 常用的命令

@@ -12,7 +12,7 @@ func main() {
     defer func2()
     defer func3()
 }
-
+	
 func func1() {
     fmt.Println("A")
 }
